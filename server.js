@@ -28,15 +28,18 @@ app.post("/webhook", async (req, res) => {
 // メッセージ受信時の処理
 async function handleMessageEvent(event) {
   const userMessage = event.message.text;
+  try {
+    // Gemini API呼び出し
+    const responseText = await getGeminiResponse(userMessage);
 
-  // Gemini API呼び出し
-  const responseText = await getGeminiResponse(userMessage);
-
-  // LINEに返信
-  await lineClient.replyMessage(event.replyToken, {
-    type: "text",
-    text: responseText,
-  });
+    // LINEに返信
+    await lineClient.replyMessage(event.replyToken, {
+      type: "text",
+      text: responseText,
+    });
+  } catch (error) {
+    console.error("Error handling message:", error);
+  }
 }
 
 // Gemini API呼び出し
@@ -49,6 +52,10 @@ async function getGeminiResponse(userMessage) {
 
   try {
     const res = await axios.post(apiUrl, requestBody);
+
+    if (!res.data.candidates || res.data.candidates.length === 0) {
+      throw new Error("No valid response from Gemini API");
+    }
 
     return (
       res.data.candidates?.[0]?.content?.parts?.[0]?.text ||
