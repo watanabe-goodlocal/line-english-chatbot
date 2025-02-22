@@ -41,15 +41,14 @@ async function handleMessageEvent(event) {
 
 // Gemini API呼び出し
 async function getGeminiResponse(userMessage) {
-  const prompt = `User: ${userMessage}\nBot:`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+  const requestBody = {
+    contents: [{ role: "user", parts: [{ text: userMessage }] }],
+  };
 
   try {
-    const res = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=${process.env.GEMINI_API_KEY}`,
-      {
-        contents: [{ role: "user", parts: [{ text: userMessage }] }],
-      }
-    );
+    const res = await axios.post(apiUrl, requestBody);
 
     return (
       res.data.candidates?.[0]?.content?.parts?.[0]?.text ||
