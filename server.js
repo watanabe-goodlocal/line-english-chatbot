@@ -46,11 +46,14 @@ async function getGeminiResponse(userMessage) {
   try {
     const res = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=${process.env.GEMINI_API_KEY}`,
-      { prompt, temperature: 0.7 }
+      {
+        contents: [{ role: "user", parts: [{ text: userMessage }] }],
+      }
     );
 
     return (
-      res.data.candidates[0]?.output || "Sorry, I couldn't understand that."
+      res.data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Sorry, I couldn't understand that."
     );
   } catch (error) {
     console.error("Gemini API Error:", error.response?.data || error.message);
