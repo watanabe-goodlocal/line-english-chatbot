@@ -7,8 +7,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const lineClient = new Client({
-  channelAccessToken: process.env.LINE_CHANNEL_SECRET,
-  channelSecret: process.env.LINE_ACCESS_TOKEN,
+  channelAccessToken: process.env.LINE_ACCESS_TOKEN,
+  channelSecret: process.env.LINE_CHANNEL_SECRET,
 });
 
 app.use(express.json());
