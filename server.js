@@ -88,7 +88,7 @@ async function getGeminiResponse(chatHistory) {
   const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
   const requestBody = {
-    contents: [{ role: "user", parts: [{ text: userMessage }] }],
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
   };
 
   try {
